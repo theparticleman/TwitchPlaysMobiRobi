@@ -1,0 +1,44 @@
+﻿@{
+    
+}
+<html>
+<head>
+    <title>Twitch Plays Mobi Robi</title>
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+    </environment>       
+</head>
+
+<body class="mobile-body">
+    <div class="row" style="margin: 20px;">
+        <form method="POST">
+            <div class="row">
+                <input type="radio" name="vote" value="stop" />
+                <label for="stop">Stop</label>
+            </div>
+            <div class="row">
+                <input type="radio" name="vote" value="left" />
+                <label for="left">Left</label>
+            </div>
+            <div class="row">
+                <input type="radio" name="vote" value="right" />
+                <label for="right">Right</label>
+            </div>
+            <div class="row">
+                <input type="radio" name="vote" value="forward" />
+                <label for="forward">Forward</label>
+            </div>
+            <div class="row">
+                <input type="submit" value="Vote" />
+            </div>
+        </form>
+    </div>
+</body>
+</html>
