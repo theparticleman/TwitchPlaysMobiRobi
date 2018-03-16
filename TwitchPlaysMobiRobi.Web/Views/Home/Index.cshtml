@@ -29,29 +29,53 @@
 
 <div class="main-text">
     <div class="row message">
-        <h1 class="timer-message">Mobo Robi will do the action with the most votes in 10s.</h1>
+        <h1 class="timer-message" id="timer-message">Mobo Robi will do the action with the most votes in 10s.</h1>
     </div>
     <div class="row votes">
         <div class="row col-sm-2"></div>
         <div class="row col-sm-2">
             <div class="row">Stop</div>
-            <div class="row stop-vote-count">0</div>
+            <div class="row" id="stop-vote-count">0</div>
         </div>
         <div class="row col-sm-2">
             <div class="row">Left</div>
-            <div class="row left-vote-count">0</div>
+            <div class="row" id="left-vote-count">0</div>
         </div>
         <div class="row col-sm-2">
             <div class="row">Right</div>
-            <div class="row right-vote-count">0</div>
+            <div class="row" id="right-vote-count">0</div>
         </div>
         <div class="row col-sm-2">
             <div class="row">Forward</div>
-            <div class="row forward-vote-count">0</div>
+            <div class="row" id="forward-vote-count">0</div>
         </div>                        
         <div class="row col-sm-2"></div>
     </div>
 </div>
 
+<script>
+    var timerMessage = document.getElementById("timer-message");
+    var stopVoteCount = document.getElementById("stop-vote-count");
+    var leftVoteCount = document.getElementById("left-vote-count");
+    var rightVoteCount = document.getElementById("right-vote-count");
+    var forwardVoteCount = document.getElementById("forward-vote-count");
+    var ajaxRequest = new XMLHttpRequest();
+    ajaxRequest.onreadystatechange = function(){
+        if(ajaxRequest.readyState == 4){
+            var response = JSON.parse(ajaxRequest.responseText);
+            timerMessage.innerHTML = "Mobi Robi will do the action with the most votes in " + response.secondsLeft + "s.";
+            stopVoteCount.innerHTML = response.stopVotes;
+            leftVoteCount.innerHTML = response.leftVotes;
+            rightVoteCount.innerHTML = response.rightVotes;
+            forwardVoteCount.innerHTML = response.forwardVotes;
+        }
+    }
+    
+    setInterval(function(){
+        ajaxRequest.open("GET", "stats", true);
+        ajaxRequest.send();
+    }, 100);
+    
+</script>
 </body>
 </html>
