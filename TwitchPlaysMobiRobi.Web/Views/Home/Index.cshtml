@@ -62,18 +62,23 @@
     var ajaxRequest = new XMLHttpRequest();
     ajaxRequest.onreadystatechange = function(){
         if(ajaxRequest.readyState == 4){
-            var response = JSON.parse(ajaxRequest.responseText);
-            timerMessage.innerHTML = "Mobi Robi will do the action with the most votes in " + response.secondsLeft + "s.";
-            stopVoteCount.innerHTML = response.stopVotes;
-            leftVoteCount.innerHTML = response.leftVotes;
-            rightVoteCount.innerHTML = response.rightVotes;
-            forwardVoteCount.innerHTML = response.forwardVotes;
+            if (ajaxRequest.status == 200) {
+                var response = JSON.parse(ajaxRequest.responseText);
+                timerMessage.innerHTML = "Mobi Robi will do the action with the most votes in " + response.secondsLeft + "s.";
+                stopVoteCount.innerHTML = response.stopVotes;
+                leftVoteCount.innerHTML = response.leftVotes;
+                rightVoteCount.innerHTML = response.rightVotes;
+                forwardVoteCount.innerHTML = response.forwardVotes;
+            }
         }
     }
     
     setInterval(function(){
-        ajaxRequest.open("GET", "stats", true);
-        ajaxRequest.send();
+        try {
+            ajaxRequest.open("GET", "stats", true);
+            ajaxRequest.send();
+        }
+        catch(err) {}
     }, 100);
     
 </script>
