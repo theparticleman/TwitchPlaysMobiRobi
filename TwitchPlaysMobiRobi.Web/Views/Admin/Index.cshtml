@@ -1,4 +1,6 @@
-﻿@{
+﻿@model TwitchPlaysMobiRobi.Web.Domain.Settings
+
+@{
     
 }
 <html>
@@ -8,13 +10,17 @@
 <body>
     <div>
         <h2>Mobi Robi URL</h2>
-        <input type="text" value="http://mobirobi" />
-        <button>Update</button>
+        <form method="POST" action="/Admin/BaseUrl">
+            <input type="text" name="url" value="@Model.MobiRobiBaseUrl" />
+            <input type="submit" value="Update" />
+        </form>
     </div>
     <div>
-        <h2>Refresh Time</h2>
-        <input type="number" value="10" /> sec
-        <button>Update</button>
+        <h2>Seconds Between Votes</h2>
+        <form method="POST" action="/Admin/SecondsBetweenVotes">
+            <input type="number" name="seconds" value="@Model.SecondsBetweenVotes" /> sec
+            <input type="submit" value="Update" />
+        </form>
     </div>
 </body>
 </html>

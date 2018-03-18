@@ -13,14 +13,19 @@ namespace TwitchPlaysMobiRobi.Tests
     private Mock<IRestClient> restClientMock;
     private TimeMock timeMock;
     private VoteTimer classUnderTest;
+    private Settings settings;
 
     [SetUp]
     public void Setup()
     {
       stats = new Stats();
+      settings = new Settings
+      {
+        MobiRobiBaseUrl = "http://google.com/",
+      };
       restClientMock = new Mock<IRestClient>();
       timeMock = new TimeMock();
-      classUnderTest = new VoteTimer(stats, restClientMock.Object, timeMock);
+      classUnderTest = new VoteTimer(stats, settings, restClientMock.Object, timeMock);
       classUnderTest.Start();
     }
 
@@ -56,23 +61,24 @@ namespace TwitchPlaysMobiRobi.Tests
       restClientMock.Verify(x => x.Execute(It.IsAny<RestRequest>()), Times.Once, "HTTP request not made corectly");
       Thread.Sleep(100);
       restClientMock.Verify(x => x.Execute(It.IsAny<RestRequest>()), Times.Once, "Timer may not have set next vote time properly");
+      restClientMock.Verify(x => x.Execute(It.Is<RestRequest>(req => req.Resource.StartsWith(settings.MobiRobiBaseUrl))));
     }
 
     [Test]
     public void WhenTimeReachedShouldResetVoteCounts()
     {
-        stats.AddStopVote();
-        stats.AddLeftVote();
-        stats.AddRightVote();
-        stats.AddForwardVote();
+      stats.AddStopVote();
+      stats.AddLeftVote();
+      stats.AddRightVote();
+      stats.AddForwardVote();
 
-        timeMock.AddSeconds(11);
-        Thread.Sleep(100);
+      timeMock.AddSeconds(11);
+      Thread.Sleep(100);
 
-        Assert.That(stats.StopVotes, Is.EqualTo(0));
-        Assert.That(stats.LeftVotes, Is.EqualTo(0));
-        Assert.That(stats.RightVotes, Is.EqualTo(0));
-        Assert.That(stats.ForwardVotes, Is.EqualTo(0));
+      Assert.That(stats.StopVotes, Is.EqualTo(0));
+      Assert.That(stats.LeftVotes, Is.EqualTo(0));
+      Assert.That(stats.RightVotes, Is.EqualTo(0));
+      Assert.That(stats.ForwardVotes, Is.EqualTo(0));
     }
 
     [Test]
@@ -118,25 +124,43 @@ namespace TwitchPlaysMobiRobi.Tests
     [Test]
     public void SecondsLeftShouldGetSetAfterStarting()
     {
-        Assert.That(stats.SecondsLeft, Is.EqualTo(10));
+      Assert.That(stats.SecondsLeft, Is.EqualTo(10));
     }
 
     [Test]
     public void SecondsLeftShouldGetUpdated()
     {
-        timeMock.AddSeconds(3);
-        Thread.Sleep(100);
+      timeMock.AddSeconds(3);
+      Thread.Sleep(100);
 
-        Assert.That(stats.SecondsLeft, Is.EqualTo(7));
+      Assert.That(stats.SecondsLeft, Is.EqualTo(7));
     }
 
     [Test]
     public void SecondsLeftShouldStartOverAfterTimeReached()
     {
-        timeMock.AddSeconds(11);
-        Thread.Sleep(100);
+      timeMock.AddSeconds(11);
+      Thread.Sleep(100);
 
-        Assert.That(stats.SecondsLeft, Is.EqualTo(10));
+      Assert.That(stats.SecondsLeft, Is.EqualTo(10));
+    }
+
+    [Test]
+    public void ShouldWaitForTimeOnSettingsBeforeSendingCommand()
+    {
+      classUnderTest.Stop();
+      settings.SecondsBetweenVotes = 20;
+      classUnderTest = new VoteTimer(stats, settings, restClientMock.Object, timeMock);
+      classUnderTest.Start();
+      stats.AddForwardVote();
+      
+      timeMock.AddSeconds(11);
+      Thread.Sleep(100);
+      restClientMock.Verify(x => x.Execute(It.IsAny<RestRequest>()), Times.Never);
+
+      timeMock.AddSeconds(10);
+      Thread.Sleep(100);
+      restClientMock.Verify(x => x.Execute(It.IsAny<RestRequest>()), Times.Once);
     }
   }
 

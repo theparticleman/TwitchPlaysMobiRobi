@@ -7,15 +7,15 @@ namespace TwitchPlaysMobiRobi.Web.Domain
 {
   public class VoteTimer
   {
-    private const int secondsBetweenVotes = 10;
     private readonly IRestClient client;
     private readonly Stats stats;
     private readonly ITime time;
+    private readonly ISettings settings;
     private Thread thread;
     private bool running;
     private DateTime nextUpdateTime;
 
-    public VoteTimer(Stats stats, IRestClient client, ITime time)
+    public VoteTimer(Stats stats, ISettings settings, IRestClient client, ITime time)
     {
       if (stats == null) throw new ArgumentException("stats cannot be null");
       if (client == null) throw new ArgumentException("client cannot be null");
@@ -23,6 +23,7 @@ namespace TwitchPlaysMobiRobi.Web.Domain
       this.client = client;
       this.stats = stats;
       this.time = time;
+      this.settings = settings;
     }
 
     public bool IsRunning
@@ -33,7 +34,7 @@ namespace TwitchPlaysMobiRobi.Web.Domain
     public void Start()
     {
       SetNextVoteTime();
-      stats.SecondsLeft = secondsBetweenVotes;
+      stats.SecondsLeft = settings.SecondsBetweenVotes;
       thread = new Thread(ThreadBody)
       {
         IsBackground = true
@@ -44,7 +45,7 @@ namespace TwitchPlaysMobiRobi.Web.Domain
 
     private void SetNextVoteTime()
     {
-      nextUpdateTime = time.Now.AddSeconds(secondsBetweenVotes);
+      nextUpdateTime = time.Now.AddSeconds(settings.SecondsBetweenVotes);
     }
 
     private void ThreadBody()
@@ -71,7 +72,7 @@ namespace TwitchPlaysMobiRobi.Web.Domain
     {
       if (stats.StopVotes <= 0 && stats.LeftVotes <= 0 && stats.RightVotes <= 0 && stats.ForwardVotes <= 0) return;
       var command = GetCommandWithHighestVotes();
-      var url = "http://mobirobi/" + command;
+      var url = settings.MobiRobiBaseUrl + command;
       var request = new RestRequest(url);
       var response = client.Execute(request);
     }

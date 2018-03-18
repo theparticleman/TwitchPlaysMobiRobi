@@ -13,13 +13,15 @@ namespace TwitchPlaysMobiRobi.Web
 {
   public class Startup
   {
-    Stats stats;
+    private readonly Stats stats;
+    private readonly Settings settings;
     private VoteTimer timer;
 
     public Startup(IConfiguration configuration)
     {
       Configuration = configuration;
       stats = new Stats();
+      settings = new Settings();
     }
 
     public IConfiguration Configuration { get; }
@@ -29,6 +31,8 @@ namespace TwitchPlaysMobiRobi.Web
     {
       services.AddMvc();
       services.AddSingleton<Stats>(stats);
+      services.AddSingleton<Settings>(settings);
+      services.AddSingleton<ISettings>(settings);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,7 +49,8 @@ namespace TwitchPlaysMobiRobi.Web
       }
 
       var stats = app.ApplicationServices.GetService<Stats>();
-      timer = new VoteTimer(stats, new RestClient("http://google.com"), new Time());
+      var settings = app.ApplicationServices.GetService<ISettings>();
+      timer = new VoteTimer(stats, settings, new RestClient("http://google.com"), new Time());
       timer.Start();
 
       app.UseStaticFiles();
