@@ -81,8 +81,8 @@ namespace TwitchPlaysMobiRobi.Web.Domain
     {
       int maxVotes = Math.Max(Math.Max(Math.Max(stats.StopVotes, stats.LeftVotes), stats.RightVotes), stats.ForwardVotes);
       if (stats.StopVotes == maxVotes) return "stop";
-      if (stats.LeftVotes == maxVotes) return "left/3";
-      if (stats.RightVotes == maxVotes) return "right/3";
+      if (stats.LeftVotes == maxVotes) return "left/1.5";
+      if (stats.RightVotes == maxVotes) return "right/1.5";
       return "forward/3";
     }
 

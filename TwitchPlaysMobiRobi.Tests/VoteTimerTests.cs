@@ -96,7 +96,7 @@ namespace TwitchPlaysMobiRobi.Tests
       stats.AddLeftVote();
       timeMock.AddSeconds(11);
       Thread.Sleep(100);
-      restClientMock.Verify(x => x.Execute(It.Is<RestRequest>(r => r.Resource.Contains("left"))));
+      restClientMock.Verify(x => x.Execute(It.Is<RestRequest>(r => r.Resource.EndsWith("left/1.5"))));
     }
 
     [Test]
@@ -107,7 +107,7 @@ namespace TwitchPlaysMobiRobi.Tests
       stats.AddLeftVote();
       timeMock.AddSeconds(11);
       Thread.Sleep(100);
-      restClientMock.Verify(x => x.Execute(It.Is<RestRequest>(r => r.Resource.Contains("right"))));
+      restClientMock.Verify(x => x.Execute(It.Is<RestRequest>(r => r.Resource.EndsWith("right/1.5"))));
     }
 
     [Test]
@@ -118,7 +118,7 @@ namespace TwitchPlaysMobiRobi.Tests
       stats.AddRightVote();
       timeMock.AddSeconds(11);
       Thread.Sleep(100);
-      restClientMock.Verify(x => x.Execute(It.Is<RestRequest>(r => r.Resource.Contains("forward"))));
+      restClientMock.Verify(x => x.Execute(It.Is<RestRequest>(r => r.Resource.EndsWith("forward/3"))));
     }
 
     [Test]
