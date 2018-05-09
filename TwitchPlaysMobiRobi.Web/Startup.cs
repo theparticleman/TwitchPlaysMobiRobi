@@ -16,12 +16,15 @@ namespace TwitchPlaysMobiRobi.Web
     private readonly Stats stats;
     private readonly Settings settings;
     private VoteTimer timer;
+    private readonly IVoteResultCache voteCache;
 
     public Startup(IConfiguration configuration)
     {
       Configuration = configuration;
       stats = new Stats();
       settings = new Settings();
+      voteCache = new VoteResultCache();
+      voteCache.Vote = new VoteResult("none");
     }
 
     public IConfiguration Configuration { get; }
@@ -33,6 +36,7 @@ namespace TwitchPlaysMobiRobi.Web
       services.AddSingleton<Stats>(stats);
       services.AddSingleton<Settings>(settings);
       services.AddSingleton<ISettings>(settings);
+      services.AddSingleton<IVoteResultCache>(voteCache);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,7 +54,8 @@ namespace TwitchPlaysMobiRobi.Web
 
       var stats = app.ApplicationServices.GetService<Stats>();
       var settings = app.ApplicationServices.GetService<ISettings>();
-      timer = new VoteTimer(stats, settings, new RestClient("http://google.com"), new Time());
+      var voteCache = app.ApplicationServices.GetService<IVoteResultCache>();
+      timer = new VoteTimer(stats, settings, new RestClient("http://google.com"), voteCache, new Time());
       timer.Start();
 
       app.UseStaticFiles();
