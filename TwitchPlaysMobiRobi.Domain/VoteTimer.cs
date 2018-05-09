@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using RestSharp;
 
-namespace TwitchPlaysMobiRobi.Web.Domain
+namespace TwitchPlaysMobiRobi.Domain
 {
     public class VoteTimer
     {

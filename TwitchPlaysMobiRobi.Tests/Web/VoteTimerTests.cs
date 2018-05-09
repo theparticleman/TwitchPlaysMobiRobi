@@ -3,7 +3,7 @@ using System.Threading;
 using Moq;
 using NUnit.Framework;
 using RestSharp;
-using TwitchPlaysMobiRobi.Web.Domain;
+using TwitchPlaysMobiRobi.Domain;
 
 namespace TwitchPlaysMobiRobi.Tests.Web
 {

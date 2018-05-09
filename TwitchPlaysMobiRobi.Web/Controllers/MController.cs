@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TwitchPlaysMobiRobi.Web.Models;
-using TwitchPlaysMobiRobi.Web.Domain;
+using TwitchPlaysMobiRobi.Domain;
 
 namespace TwitchPlaysMobiRobi.Web.Controllers
 {

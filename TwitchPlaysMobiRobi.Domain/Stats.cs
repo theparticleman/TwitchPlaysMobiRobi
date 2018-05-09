@@ -1,4 +1,4 @@
-namespace TwitchPlaysMobiRobi.Web.Domain
+namespace TwitchPlaysMobiRobi.Domain
 {
   public class Stats
   {

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RestSharp;
-using TwitchPlaysMobiRobi.Web.Domain;
+using TwitchPlaysMobiRobi.Domain;
 
 namespace TwitchPlaysMobiRobi.Web
 {

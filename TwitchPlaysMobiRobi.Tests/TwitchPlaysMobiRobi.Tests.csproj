@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TwitchPlaysMobiRobi.Web\TwitchPlaysMobiRobi.Web.csproj" />
     <ProjectReference Include="..\TwitchPlaysMobiRobi.Proxy\TwitchPlaysMobiRobi.Proxy.csproj" />
+    <ProjectReference Include="..\TwitchPlaysMobiRobi.Domain\TwitchPlaysMobiRobi.Domain.csproj" />
   </ItemGroup>
 
 </Project>

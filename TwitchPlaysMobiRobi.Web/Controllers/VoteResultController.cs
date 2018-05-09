@@ -1,6 +1,6 @@
 
 using Microsoft.AspNetCore.Mvc;
-using TwitchPlaysMobiRobi.Web.Domain;
+using TwitchPlaysMobiRobi.Domain;
 
 namespace TwitchPlaysMobiRobi.Web
 {
