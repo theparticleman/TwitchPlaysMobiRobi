@@ -1,1 +1,70 @@
-body{padding-top:50px;padding-bottom:20px}.body-content{padding-left:15px;padding-right:15px}.carousel-caption p{font-size:20px;line-height:1.4}.carousel-inner .item img[src$=".svg"]{width:100%}#qrCode{margin:15px}@media screen and (max-width:767px){.carousel-caption{display:none}}
+.hero-image {
+    background-image: url("/images/mobi-robi.jpg");
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    margin: auto;
+    max-height: 300px;
+}    
+
+.hero-text {
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+}
+
+.hero-text h1 {
+    font-size: 87px;
+}
+
+.main-text {
+    text-align: center;
+}
+
+.main-text h1 {
+    margin: 40px;
+}
+
+.message {
+    background-color: lightgray;
+}
+
+.votes {
+    font-size: 60px;
+}
+
+.mobile-body {
+    text-align: center;
+}
+
+.mobile-body input[type="radio"] {
+    height: 10vmin;
+    width: 10vmin;
+    margin-right: 3vmin;
+}
+
+.mobile-body label {
+    font-size: 10vmin;
+}
+
+.mobile-body input[type="submit"] {
+    font-size: 10vmin;
+    padding: 2vmin;
+}
+
+
+
+@media only screen and (max-width:  975px) {
+    .hero-text h1 {
+        font-size: 50px;
+    }
+    
+    .votes {
+        font-size: 30px;
+    }
+}
