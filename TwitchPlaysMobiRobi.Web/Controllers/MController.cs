@@ -42,6 +42,10 @@ namespace TwitchPlaysMobiRobi.Web.Controllers
         case "forward":
           stats.AddForwardVote();
           break;
+        case "blink":
+          stats.AddBlinkVote();
+          break;
+          
       }
       return View((object)vote);
     }

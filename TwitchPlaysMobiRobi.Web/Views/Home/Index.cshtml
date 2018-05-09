@@ -32,7 +32,7 @@
         <h1 class="timer-message" id="timer-message">Mobo Robi will do the action with the most votes in 10s.</h1>
     </div>
     <div class="row votes">
-        <div class="row col-sm-2"></div>
+        <div class="row col-sm-1"></div>
         <div class="row col-sm-2">
             <div class="row">Stop</div>
             <div class="row" id="stop-vote-count">0</div>
@@ -48,8 +48,12 @@
         <div class="row col-sm-2">
             <div class="row">Forward</div>
             <div class="row" id="forward-vote-count">0</div>
-        </div>                        
-        <div class="row col-sm-2"></div>
+        </div>                 
+        <div class="row col-sm-2">
+            <div class="row">Blink</div>
+            <div class="row" id="blink-vote-count">0</div>
+        </div>               
+        <div class="row col-sm-1"></div>
     </div>
 </div>
 
@@ -59,6 +63,7 @@
     var leftVoteCount = document.getElementById("left-vote-count");
     var rightVoteCount = document.getElementById("right-vote-count");
     var forwardVoteCount = document.getElementById("forward-vote-count");
+    var blinkVoteCount = document.getElementById("blink-vote-count");
     var ajaxRequest = new XMLHttpRequest();
     ajaxRequest.onreadystatechange = function(){
         if(ajaxRequest.readyState == 4){
@@ -69,6 +74,7 @@
                 leftVoteCount.innerHTML = response.leftVotes;
                 rightVoteCount.innerHTML = response.rightVotes;
                 forwardVoteCount.innerHTML = response.forwardVotes;
+                blinkVoteCount.innerHTML = response.blinkVotes;
             }
         }
     }
