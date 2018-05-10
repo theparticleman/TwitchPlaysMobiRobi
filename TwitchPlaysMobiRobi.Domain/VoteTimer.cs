@@ -73,7 +73,7 @@ namespace TwitchPlaysMobiRobi.Domain
 
         private void SendVote()
         {
-            if (stats.StopVotes <= 0 && stats.LeftVotes <= 0 && stats.RightVotes <= 0 && stats.ForwardVotes <= 0) return;
+            if (stats.StopVotes <= 0 && stats.LeftVotes <= 0 && stats.RightVotes <= 0 && stats.ForwardVotes <= 0 && stats.BlinkVotes <= 0) return;
             var command = GetCommandWithHighestVotes();
             voteCache.Vote = new VoteResult(command);
             var url = settings.MobiRobiBaseUrl + command;
@@ -83,10 +83,11 @@ namespace TwitchPlaysMobiRobi.Domain
 
         private string GetCommandWithHighestVotes()
         {
-            int maxVotes = Math.Max(Math.Max(Math.Max(stats.StopVotes, stats.LeftVotes), stats.RightVotes), stats.ForwardVotes);
+            int maxVotes = Math.Max(Math.Max(Math.Max(Math.Max(stats.StopVotes, stats.LeftVotes), stats.RightVotes), stats.ForwardVotes), stats.BlinkVotes);
             if (stats.StopVotes == maxVotes) return "stop";
             if (stats.LeftVotes == maxVotes) return "left/1.5";
             if (stats.RightVotes == maxVotes) return "right/1.5";
+            if (stats.BlinkVotes == maxVotes) return "blink/1";
             return "forward/3";
         }
 

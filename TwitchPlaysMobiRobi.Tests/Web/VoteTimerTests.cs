@@ -133,6 +133,16 @@ namespace TwitchPlaysMobiRobi.Tests.Web
         }
 
         [Test]
+        public void WhenBlinkHasMostVotes()
+        {
+            stats.AddBlinkVote();
+            stats.AddBlinkVote();
+            timeMock.AddSeconds(11);
+            Thread.Sleep(100);
+            restClientMock.Verify(x => x.Execute(It.Is<RestRequest>(r => r.Resource.EndsWith("blink/1"))));
+        }
+
+        [Test]
         public void SecondsLeftShouldGetSetAfterStarting()
         {
             Assert.That(stats.SecondsLeft, Is.EqualTo(10));
