@@ -1,5 +1,6 @@
 
 using System;
+using System.Net;
 using RestSharp;
 
 namespace TwitchPlaysMobiRobi.Proxy
@@ -19,14 +20,26 @@ namespace TwitchPlaysMobiRobi.Proxy
         public void CheckVote()
         {
             var webSiteRequest = new RestRequest();
-            webSiteRequest.Resource = settings.WebSiteBaseUrl + "vote";
-            var result = client.Execute<VoteResult>(webSiteRequest);
-            if (result.Data.Id != previousId)
+            webSiteRequest.Resource = settings.WebSiteBaseUrl + "voteResult";
+            var websiteResponse = client.Execute<VoteResult>(webSiteRequest);
+            if (websiteResponse.StatusCode == HttpStatusCode.OK)
             {
-                previousId = result.Data.Id;
-                var mobiRobiRequest = new RestRequest();
-                mobiRobiRequest.Resource = settings.MoboRobiBaseUrl + result.Data.Vote;
-                client.Execute(mobiRobiRequest);
+                if (websiteResponse.Data.Id != previousId)
+                {
+                    Console.WriteLine($"Got new command '{websiteResponse.Data.Vote}'");
+                    previousId = websiteResponse.Data.Id;
+                    var mobiRobiRequest = new RestRequest();
+                    mobiRobiRequest.Resource = settings.MoboRobiBaseUrl + websiteResponse.Data.Vote;
+                    var mobirobiResponse = client.Execute(mobiRobiRequest);
+                    if (mobirobiResponse.StatusCode != HttpStatusCode.OK)
+                    {
+                        Console.WriteLine($"Got {mobirobiResponse.StatusCode} status code from Mobi Robi");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Got {websiteResponse.StatusCode} status code from web site");
             }
         }
     }

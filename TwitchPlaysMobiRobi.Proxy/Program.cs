@@ -16,8 +16,15 @@ namespace TwitchPlaysMobiRobi.Proxy
             {
                 while (running)
                 {
-                    checkVoteResults.CheckVote();
-                    Task.Delay(100);
+                    try
+                    {
+                        checkVoteResults.CheckVote();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Exception when checking votes: " + ex);
+                    }
+                    Thread.Sleep(100);
                 }
             });
 

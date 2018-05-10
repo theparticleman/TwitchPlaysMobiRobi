@@ -1,3 +1,4 @@
+using System.Net;
 using Moq;
 using NUnit.Framework;
 using RestSharp;
@@ -10,7 +11,7 @@ namespace TwitchPlaysMobiRobi.Tests.Proxy
         private Settings settings;
         private Mock<IRestClient> client;
         private CheckVoteResults ClassUnderTest;
-        private Mock<IRestResponse<VoteResult>> response;
+        private Mock<IRestResponse<VoteResult>> websiteResponse;
 
         [SetUp]
         public void SetUp()
@@ -18,16 +19,19 @@ namespace TwitchPlaysMobiRobi.Tests.Proxy
             settings = new Settings { WebSiteBaseUrl = "http://foo.com/", MoboRobiBaseUrl = "http://mobirobi.com/" };
             client = new Mock<IRestClient>();
             ClassUnderTest = new CheckVoteResults(client.Object, settings);
-            response = new Mock<IRestResponse<VoteResult>>();
-            response.Setup(x => x.Data).Returns(new VoteResult { Vote = "stop", Id = "42" });
-            client.Setup(x => x.Execute<VoteResult>(It.IsAny<RestRequest>())).Returns(response.Object);
+            websiteResponse = new Mock<IRestResponse<VoteResult>>();
+            websiteResponse.Setup(x => x.Data).Returns(new VoteResult { Vote = "stop", Id = "42" });
+            websiteResponse.Setup(x => x.StatusCode).Returns(HttpStatusCode.OK);
+            client.Setup(x => x.Execute<VoteResult>(It.IsAny<RestRequest>())).Returns(websiteResponse.Object);
+            var mobirobiResponse = new Mock<IRestResponse>();
+            client.Setup(x => x.Execute(It.IsAny<RestRequest>())).Returns(mobirobiResponse.Object);
         }
 
         [Test]
         public void ShouldCallWebSiteToGetCurrentVote()
         {
             ClassUnderTest.CheckVote();
-            client.Verify(x => x.Execute<VoteResult>(It.Is<RestRequest>(req => req.Resource == "http://foo.com/vote")));
+            client.Verify(x => x.Execute<VoteResult>(It.Is<RestRequest>(req => req.Resource == "http://foo.com/voteResult")));
         }
 
         [Test]
@@ -35,9 +39,9 @@ namespace TwitchPlaysMobiRobi.Tests.Proxy
         {
             ClassUnderTest.CheckVote();
             ClassUnderTest.CheckVote();
-            client.Verify(x => x.Execute(It.Is<RestRequest>(req => req.Resource != null)));
-            client.Verify(x => x.Execute(It.Is<RestRequest>(req => req.Resource.StartsWith(settings.MoboRobiBaseUrl))),
-                Times.Once); //Should call Mobi Robi the first time the vote is checked 
+
+            //Should call Mobi Robi the first time the vote is checked 
+            client.Verify(x => x.Execute(It.Is<RestRequest>(req => req.Resource.StartsWith(settings.MoboRobiBaseUrl))), Times.Once); 
         }
 
         [Test]
@@ -46,11 +50,21 @@ namespace TwitchPlaysMobiRobi.Tests.Proxy
             ClassUnderTest.CheckVote();
             var secondResponse = new Mock<IRestResponse<VoteResult>>();
             secondResponse.Setup(x => x.Data).Returns(new VoteResult { Vote = "forward", Id = "43" });
+            secondResponse.Setup(x => x.StatusCode).Returns(HttpStatusCode.OK);
             client.Setup(x => x.Execute<VoteResult>(It.IsAny<RestRequest>())).Returns(secondResponse.Object);
 
             ClassUnderTest.CheckVote();
 
             client.Verify(x => x.Execute(It.Is<RestRequest>(req => req.Resource == "http://mobirobi.com/forward")));
+        }
+
+        [Test]
+        public void ShouldNotCallMobiRobiWhenStatusCodeIsNotOk()
+        {
+            websiteResponse.Setup(x => x.StatusCode).Returns(HttpStatusCode.InternalServerError);
+            ClassUnderTest.CheckVote();
+
+            client.Verify(x => x.Execute(It.Is<RestRequest>(req => req.Resource.StartsWith(settings.MoboRobiBaseUrl))), Times.Never);
         }
     }
 }
